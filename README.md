@@ -1,11 +1,21 @@
-# 🖼️ Image-Classifier
+# Image-Classifier
 
 <p align="center">
-  <b>一个功能丰富、易于使用的 PyTorch 图像分类框架</b>
+  <b>🚀 一个功能丰富、易于使用的 PyTorch 图像分类项目</b>
 </p>
 
 <p align="center">
-  支持 20+ 种模型架构 | 🔥 知识蒸馏 | 🎨 丰富数据增强 | ⚡ 混合精度训练 | 📦 多格式导出
+  <em>从训练到部署，一站式解决图像分类任务</em>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.12+-blue.svg" alt="Python">
+  <img src="https://img.shields.io/badge/PyTorch-2.6+-ee4c2c.svg" alt="PyTorch">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
+</p>
+
+<p align="center">
+  🤖 <b>20+ 模型架构</b> · 🔥 <b>知识蒸馏</b> · 🎨 <b>丰富数据增强</b> · ⚡ <b>多种训练技巧</b> · 📦 <b>多格式导出</b>
 </p>
 
 ## 目录
@@ -28,7 +38,7 @@
 
 | 特性 | 说明 |
 |------|------|
-| 🧠 **模型支持** | 20+ 种模型架构，支持 ImageNet 预训练权重与自定义权重加载 |
+| 🤖 **模型支持** | 20+ 种模型架构，支持 ImageNet 预训练权重与自定义权重加载 |
 | 🔥 **知识蒸馏** | SoftTarget、MGD、SP、AT 等多种蒸馏方法 |
 | 🎨 **数据增强** | 基础增强、混合增强（MixUp、CutMix）、TTA 测试时增强 |
 | ⚡ **训练技巧** | AMP、EMA、Gradient Accumulation、Early Stop、R-Drop、Label Smoothing 等训练技巧 |
@@ -38,7 +48,7 @@
 
 ## 🏗️ 支持模型
 
-### 📊 模型列表
+### 🤖 模型列表
 
 | 模型名称 | 可选版本 |
 |----------|----------|
@@ -574,5 +584,5 @@ pip install nvidia-pyindex nvidia-tensorrt
 ---
 
 <p align="center">
-  ⭐ 如果这个项目对你有帮助，请给一个 Star！⭐
+  ⭐ 如果这个项目对您有帮助，请给个Star支持一下~ ⭐
 </p>
