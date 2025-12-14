@@ -11,17 +11,18 @@
 ## 目录
 
 - [✨ 特性亮点](#-特性亮点)
-- [🏗️ 支持的模型](#️-支持的模型)
+- [🏗️ 支持模型](#️-支持模型)
 - [📁 项目结构](#-项目结构)
 - [🚀 快速开始](#-快速开始)
 - [⚙️ 参数详解](#️-参数详解)
 - [🔧 高级功能](#-高级功能)
-- [📊 训练监控与可视化](#-训练监控与可视化)
+- [📊 训练监控](#-训练监控)
 - [📦 模型导出](#-模型导出)
 - [🔬 模型评估](#-模型评估)
 - [💡 最佳实践](#-最佳实践)
 - [📋 依赖环境](#-依赖环境)
-- [📄 License](#-license)
+- [📄 开源协议](#-开源协议)
+- [📚 参考资料](#-参考资料)
 
 ## ✨ 特性亮点
 
@@ -35,7 +36,7 @@
 | 📊 **可视化**   | TensorBoard、Grad-CAM、t-SNE |
 | 📦 **模型导出** | TorchScript、ONNX、TensorRT 多格式支持 |
 
-## 🏗️ 支持的模型
+## 🏗️ 支持模型
 
 ### 📊 模型列表
 
@@ -302,10 +303,10 @@ python metrics.py --save_path runs/exp --task fps --batch_size 32
 
 | 方法 | 论文 | 说明 |
 |------|------|------|
-| **SoftTarget** | Hinton et al. | 经典软标签蒸馏，使用教师模型的软化输出 |
-| **MGD** | Masked Generative Distillation | 基于掩码的特征蒸馏 |
-| **SP** | Similarity-Preserving | 保持样本间相似性关系 |
-| **AT** | Attention Transfer | 注意力图迁移 |
+| **SoftTarget** | [Distilling the Knowledge in a Neural Network](https://arxiv.org/abs/1503.02531) | 经典软标签蒸馏，使用教师模型的软化输出 |
+| **MGD** | [Masked Generative Distillation](https://arxiv.org/abs/2205.01529) | 基于掩码的特征蒸馏 |
+| **SP** | [Similarity-Preserving Knowledge Distillation](https://arxiv.org/abs/1907.09682) | 保持样本间相似性关系 |
+| **AT** | [Paying More Attention to Attention](https://arxiv.org/abs/1612.03928) | 注意力图迁移 |
 
 #### 蒸馏训练流程
 
@@ -394,7 +395,7 @@ python predict.py \
 > [!NOTE]
 > CAM 可视化仅支持 CPU 和 FP32 模式
 
-## 📊 训练监控与可视化
+## 📊 训练监控
 
 ### TensorBoard
 
@@ -546,14 +547,29 @@ pip install onnx onnx-simplifier onnxruntime
 pip install nvidia-pyindex nvidia-tensorrt
 ```
 
-## 📄 License
+## 📄 开源协议
 
-本项目采用 MIT License 开源协议。
+本项目采用 [MIT License](LICENSE) 开源协议。
 
-## 🙏 致谢
+## 📚 参考资料
 
-感谢以下开源项目：
+感谢以下开源项目的启发与贡献：
 
+- [pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
+- [CIFAR-ZOO](https://github.com/BIGBALLON/CIFAR-ZOO)
+- [yolov5](https://github.com/ultralytics/yolov5)
+- [RepVGG](https://github.com/DingXiaoH/RepVGG)
+- [ghostnet.pytorch](https://github.com/d-li14/ghostnet.pytorch)
+- [VoVNet.pytorch](https://github.com/stigma0617/VoVNet.pytorch)
+- [ResNeSt](https://github.com/zhanghang1989/ResNeSt)
+- [sequencer](https://github.com/okojoalg/sequencer)
+- [pretrained-models.pytorch](https://github.com/Cadene/pretrained-models.pytorch)
+- [pytorch-grad-cam](https://github.com/jacobgil/pytorch-grad-cam)
+- [PolyLoss](https://github.com/jahongir7174/PolyLoss)
+- [CutMix-PyTorch](https://github.com/clovaai/CutMix-PyTorch)
+- [Knowledge-Distillation-Zoo](https://github.com/AberHu/Knowledge-Distillation-Zoo)
+- [torchdistill](https://github.com/yoshitomo-matsubara/torchdistill)
+- [albumentations](https://github.com/albumentations-team/albumentations)
 
 ---
 
