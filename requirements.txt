@@ -2,9 +2,9 @@
 # Usage: pip install -r requirements.txt
 
 # Base ------------------------------------------------------------------------
-opencv-python
+opencv-python>=4.5.0
 grad-cam
-timm
+timm>=0.9.0
 scikit-learn
 matplotlib
 prettytable
@@ -13,6 +13,14 @@ thop
 rfconv
 albumentations
 pycm
+requests>=2.30.0
+urllib3>=1.26.0,<3.0.0
+charset-normalizer>=2.1.0
+
+# Computer Vision Libraries ---------------------------------------------------
+# mmcv is needed for ConvModule and build_* functions used in TransXNet
+mmcv>=2.0.0rc4,<2.2.0
+# Install mmcv with: pip install mmcv -f https://download.openmmlab.com/mmcv/dist/cu126/torch2.6.0/index.html
 
 # Export ----------------------------------------------------------------------
 # onnx # ONNX export

@@ -13,5 +13,6 @@ from .resnest import *
 from .resnet import *
 from .sequencer import *
 from .shufflenetv2 import *
+from .transxnet import *
 from .vgg import *
 from .vovnet import *

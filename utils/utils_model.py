@@ -116,6 +116,23 @@ def select_model(name, num_classes, input_shape=None, channels=None, pretrained=
             nn.Dropout(0.2),
             nn.Linear(in_features=model.classifier.in_features, out_features=num_classes)
         )
+    elif name.startswith('transxnet'):
+        # TransXNet模型支持
+        # 提取架构类型 (t, s, b)
+        if '_' in name:
+            arch = name.split('_')[-1]  # transxnet_t -> t
+        else:
+            arch = 't'  # 默认为tiny
+        
+        # 使用对应的函数创建模型
+        if arch == 't':
+            model = models.transxnet_t(pretrained=pretrained, num_classes=num_classes)
+        elif arch == 's':
+            model = models.transxnet_s(pretrained=pretrained, num_classes=num_classes)
+        elif arch == 'b':
+            model = models.transxnet_b(pretrained=pretrained, num_classes=num_classes)
+        else:
+            raise ValueError(f'Unsupported TransXNet architecture: {arch}')
     else:
         raise ValueError('Unsupported Model Name.')
 
@@ -138,7 +155,7 @@ def select_model(name, num_classes, input_shape=None, channels=None, pretrained=
     return model
 
 if __name__ == '__main__':
-    model = select_model(name='shufflenet_v2_x0_5', num_classes=5, channels=3, input_shape=(224, 224))
+    # model = select_model(name='shufflenet_v2_x0_5', num_classes=5, channels=3, input_shape=(224, 224))
     # model = select_model(name='shufflenet_v2_x1_0', num_classes=5, channels=3, input_shape=(224, 224))
     # model = select_model(name='mobilenetv2', num_classes=5, channels=3, input_shape=(224, 224))
     # model = select_model(name='mobilenetv3_large', num_classes=5, channels=3, input_shape=(224, 224))
@@ -191,4 +208,8 @@ if __name__ == '__main__':
     # model = select_model(name='sequencer2d_s', num_classes=5, channels=3, input_shape=(224, 224))
     # model = select_model(name='cspresnet50', num_classes=5, channels=3, input_shape=(224, 224))
     # model = select_model(name='dpn98', num_classes=5, channels=3, input_shape=(224, 224), pretrained=True)
+    # 测试 TransXNet 模型
+    model = select_model(name='transxnet_t', num_classes=5, channels=3, input_shape=(224, 224))
+    # model = select_model(name='transxnet_s', num_classes=5, channels=3, input_shape=(224, 224))
+    # model = select_model(name='transxnet_b', num_classes=5, channels=3, input_shape=(224, 224))
     pass

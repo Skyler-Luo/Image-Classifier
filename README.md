@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  🤖 <b>20+ 模型架构</b> · 🔥 <b>知识蒸馏</b> · 🎨 <b>丰富数据增强</b> · ⚡ <b>多种训练技巧</b> · 📦 <b>多格式导出</b>
+  🤖 <b>21+ 模型架构</b> · 🔥 <b>知识蒸馏</b> · 🎨 <b>丰富数据增强</b> · ⚡ <b>多种训练技巧</b> · 📦 <b>多格式导出</b>
 </p>
 
 ## 目录
@@ -38,7 +38,7 @@
 
 | 特性 | 说明 |
 |------|------|
-| 🤖 **模型支持** | 20+ 种模型架构，支持 ImageNet 预训练权重与自定义权重加载 |
+| 🤖 **模型支持** | 21+ 种模型架构，支持 ImageNet 预训练权重与自定义权重加载 |
 | 🔥 **知识蒸馏** | SoftTarget、MGD、SP、AT 等多种蒸馏方法 |
 | 🎨 **数据增强** | 基础增强、混合增强（MixUp、CutMix）、TTA 测试时增强 |
 | ⚡ **训练技巧** | AMP、EMA、Gradient Accumulation、Early Stop、R-Drop、Label Smoothing 等训练技巧 |
@@ -72,9 +72,7 @@
 | VoVNet | `vovnet39`, `vovnet57` |
 | MNASNet | `mnasnet` |
 | Sequencer2D | `sequencer2d_s`, `sequencer2d_m`, `sequencer2d_l` |
-
-> [!NOTE]
-> ViT相关模型待集成
+| TransXNet | `transxnet_t`, `transxnet_s`, `transxnet_b` |
 
 ## 📁 项目结构
 
@@ -125,6 +123,9 @@ cd Image-Classifier
 # 安装 PyTorch (https://pytorch.org/get-started/previous-versions/)
 pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu126
 
+# 安装 MMCV (针对 CUDA 12.6 + PyTorch 2.6.0)
+pip install mmcv -f https://download.openmmlab.com/mmcv/dist/cu126/torch2.6.0/index.html
+
 # 安装其余依赖
 pip install -r requirements.txt
 ```
@@ -136,34 +137,34 @@ pip install -r requirements.txt
 ```
 dataset/
 ├── 📁 train/                    # 训练集
-│   ├── 📁 cat/                  # 类别1
+│   ├── 📁 class1/                  # 类别1
 │   │   ├── cat_001.jpg
 │   │   ├── cat_002.jpg
 │   │   └── ...
-│   ├── 📁 dog/                  # 类别2
+│   ├── 📁 class2/                  # 类别2
 │   │   ├── dog_001.jpg
 │   │   └── ...
-│   └── 📁 bird/                 # 类别3
+│   └── 📁 class3/                 # 类别3
 │       └── ...
 │
 ├── 📁 val/                      # 验证集 (结构同上)
-│   ├── 📁 cat/
-│   ├── 📁 dog/
-│   └── 📁 bird/
+│   ├── 📁 class1/
+│   ├── 📁 class2/
+│   └── 📁 class3/
 │
 ├── 📁 test/                     # 测试集 (结构同上)
-│   ├── 📁 cat/
-│   ├── 📁 dog/
-│   └── 📁 bird/
+│   ├── 📁 class1/
+│   ├── 📁 class2/
+│   └── 📁 class3/
 │
 └── 📄 label.txt                 # 类别标签文件
 ```
 
 **label.txt 格式：**
 ```
-cat
-dog
-bird
+class1
+class2
+class3
 ```
 
 #### 使用数据集划分工具
@@ -550,6 +551,12 @@ python metrics.py \
 # 安装基础依赖
 pip install -r requirements.txt
 
+# 安装 MMCV (根据你的 CUDA 和 PyTorch 版本选择)
+# CUDA 12.6 + PyTorch 2.6.0
+pip install mmcv -f https://download.openmmlab.com/mmcv/dist/cu126/torch2.6.0/index.html
+
+# 其他版本请参考: https://mmcv.readthedocs.io/en/latest/get_started/installation.html
+
 # 安装 ONNX 导出支持
 pip install onnx onnx-simplifier onnxruntime
 
@@ -573,6 +580,7 @@ pip install nvidia-pyindex nvidia-tensorrt
 - [VoVNet.pytorch](https://github.com/stigma0617/VoVNet.pytorch)
 - [ResNeSt](https://github.com/zhanghang1989/ResNeSt)
 - [sequencer](https://github.com/okojoalg/sequencer)
+- [TransXNet](https://github.com/LMMMEng/TransXNet)
 - [pretrained-models.pytorch](https://github.com/Cadene/pretrained-models.pytorch)
 - [pytorch-grad-cam](https://github.com/jacobgil/pytorch-grad-cam)
 - [PolyLoss](https://github.com/jahongir7174/PolyLoss)
