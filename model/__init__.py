@@ -15,4 +15,5 @@ from .sequencer import *
 from .shufflenetv2 import *
 from .transxnet import *
 from .vgg import *
+from .vision_transformer import *
 from .vovnet import *

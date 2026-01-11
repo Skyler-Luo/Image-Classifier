@@ -9,7 +9,6 @@ from timm.models.helpers import named_apply
 from timm.models.layers import (
     ConvNormAct, ConvNormActAa, DropPath, create_act_layer, get_attn, make_divisible
 )
-from timm.models.registry import register_model
 
 from utils.utils import fuse_conv_bn, load_weights_from_state_dict
 
@@ -977,117 +976,95 @@ def _create_cspnet(variant, pretrained=False, **kwargs):
         model = load_weights_from_state_dict(model, state_dict)
     return model
 
-@register_model
+
 def cspresnet50(pretrained=False, **kwargs):
     return _create_cspnet('cspresnet50', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cspresnet50d(pretrained=False, **kwargs):
     return _create_cspnet('cspresnet50d', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cspresnet50w(pretrained=False, **kwargs):
     return _create_cspnet('cspresnet50w', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cspresnext50(pretrained=False, **kwargs):
     return _create_cspnet('cspresnext50', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cspdarknet53(pretrained=False, **kwargs):
     return _create_cspnet('cspdarknet53', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def darknet17(pretrained=False, **kwargs):
     return _create_cspnet('darknet17', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def darknet21(pretrained=False, **kwargs):
     return _create_cspnet('darknet21', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def sedarknet21(pretrained=False, **kwargs):
     return _create_cspnet('sedarknet21', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def darknet53(pretrained=False, **kwargs):
     return _create_cspnet('darknet53', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def darknetaa53(pretrained=False, **kwargs):
     return _create_cspnet('darknetaa53', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3darknet_s(pretrained=False, **kwargs):
     return _create_cspnet('cs3darknet_s', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3darknet_m(pretrained=False, **kwargs):
     return _create_cspnet('cs3darknet_m', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3darknet_l(pretrained=False, **kwargs):
     return _create_cspnet('cs3darknet_l', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3darknet_x(pretrained=False, **kwargs):
     return _create_cspnet('cs3darknet_x', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3darknet_focus_s(pretrained=False, **kwargs):
     return _create_cspnet('cs3darknet_focus_s', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3darknet_focus_m(pretrained=False, **kwargs):
     return _create_cspnet('cs3darknet_focus_m', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3darknet_focus_l(pretrained=False, **kwargs):
     return _create_cspnet('cs3darknet_focus_l', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3darknet_focus_x(pretrained=False, **kwargs):
     return _create_cspnet('cs3darknet_focus_x', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3sedarknet_l(pretrained=False, **kwargs):
     return _create_cspnet('cs3sedarknet_l', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3sedarknet_x(pretrained=False, **kwargs):
     return _create_cspnet('cs3sedarknet_x', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3sedarknet_xdw(pretrained=False, **kwargs):
     return _create_cspnet('cs3sedarknet_xdw', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3edgenet_x(pretrained=False, **kwargs):
     return _create_cspnet('cs3edgenet_x', pretrained=pretrained, **kwargs)
 
 
-@register_model
 def cs3se_edgenet_x(pretrained=False, **kwargs):
     return _create_cspnet('cs3se_edgenet_x', pretrained=pretrained, **kwargs)
 

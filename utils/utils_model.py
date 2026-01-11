@@ -133,6 +133,9 @@ def select_model(name, num_classes, input_shape=None, channels=None, pretrained=
             model = models.transxnet_b(pretrained=pretrained, num_classes=num_classes)
         else:
             raise ValueError(f'Unsupported TransXNet architecture: {arch}')
+    elif name.startswith('vit_'):
+        # Vision Transformer模型支持 (vit_b_16, vit_b_32, vit_l_16, vit_l_32, vit_h_14)
+        model = eval('models.{}(pretrained={}, num_classes={})'.format(name, pretrained, num_classes))
     else:
         raise ValueError('Unsupported Model Name.')
 
@@ -208,8 +211,12 @@ if __name__ == '__main__':
     # model = select_model(name='sequencer2d_s', num_classes=5, channels=3, input_shape=(224, 224))
     # model = select_model(name='cspresnet50', num_classes=5, channels=3, input_shape=(224, 224))
     # model = select_model(name='dpn98', num_classes=5, channels=3, input_shape=(224, 224), pretrained=True)
-    # 测试 TransXNet 模型
-    model = select_model(name='transxnet_t', num_classes=5, channels=3, input_shape=(224, 224))
+    # model = select_model(name='transxnet_t', num_classes=5, channels=3, input_shape=(224, 224))
     # model = select_model(name='transxnet_s', num_classes=5, channels=3, input_shape=(224, 224))
     # model = select_model(name='transxnet_b', num_classes=5, channels=3, input_shape=(224, 224))
+    model = select_model(name='vit_b_16', num_classes=5, channels=3, input_shape=(224, 224))
+    # model = select_model(name='vit_b_32', num_classes=5, channels=3, input_shape=(224, 224))
+    # model = select_model(name='vit_l_16', num_classes=5, channels=3, input_shape=(224, 224))
+    # model = select_model(name='vit_l_32', num_classes=5, channels=3, input_shape=(224, 224))
+    # model = select_model(name='vit_h_14', num_classes=5, channels=3, input_shape=(518, 518))  # vit_h_14 需要 518x518 输入
     pass
