@@ -437,20 +437,30 @@ tensorboard --logdir=runs/exp/tensorboard
 
 ```
 runs/exp/
-├── best.pt                  # 最佳模型权重
-├── last.pt                  # 最后一轮模型权重
-├── train.log                # 训练日志 (CSV 格式)
-├── param.yaml               # 训练参数配置
-├── preprocess.transforms    # 数据预处理参数
-├── main.py                  # 训练脚本备份
+├── best.pt                   # 最佳模型权重
+├── last.pt                   # 最后一轮模型权重
+├── train.log                 # 训练日志 (CSV 格式)
+├── param.yaml                # 训练参数配置
+├── preprocess.transforms     # 数据预处理参数
+├── main.py                   # 训练脚本备份
 ├── conafig.py                # 配置文件备份
-├── train_batch1.png         # 训练批次可视化
-├── iterative_curve.png      # Loss/Accuracy 曲线
+├── train_batch1.png          # 训练批次可视化
+├── iterative_curve.png       # Loss/Accuracy 曲线
 ├── lesarning_rate_curve.png  # 学习率曲线
-└── tensorboard/             # TensorBoard 日志
+└── tensorboard/              # TensorBoard 日志
 ```
 
 ## 📦 模型导出
+
+### 安装命令
+
+```bash
+# 安装 ONNX 导出支持
+pip install onnx onnx-simplifier onnxruntime
+
+# 安装 TensorRT 支持 (需要 NVIDIA GPU)
+pip install nvidia-pyindex nvidia-tensorrt
+```
 
 ### 导出为 ONNX
 
@@ -545,25 +555,6 @@ python metrics.py \
     --task fps \
     --batch_size 32 \
     --device 0
-```
-
-### 安装命令
-
-```bash
-# 安装基础依赖
-pip install -r requirements.txt
-
-# 安装 MMCV (根据你的 CUDA 和 PyTorch 版本选择)
-# CUDA 12.6 + PyTorch 2.6.0
-pip install mmcv -f https://download.openmmlab.com/mmcv/dist/cu126/torch2.6.0/index.html
-
-# 其他版本请参考: https://mmcv.readthedocs.io/en/latest/get_started/installation.html
-
-# 安装 ONNX 导出支持
-pip install onnx onnx-simplifier onnxruntime
-
-# 安装 TensorRT 支持 (需要 NVIDIA GPU)
-pip install nvidia-pyindex nvidia-tensorrt
 ```
 
 ## 📄 开源协议
