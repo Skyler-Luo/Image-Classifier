@@ -184,6 +184,8 @@ python processing.py --data_path dataset/train --val_size 0.1 --test_size 0.2
 
 ### 3️⃣ 开始训练
 
+#### 单卡训练
+
 ```bash
 python main.py \
     --model_name resnet18 \
@@ -195,13 +197,57 @@ python main.py \
     --optimizer AdamW \
     --lr 1e-3 \
     --Augment RandAugment \
-    --label_smoothing 01 \
-    --mixup cutmix \
     --label_smoothing 0.1 \
+    --mixup cutmix \
     --amp \
     --ema \
     --warmup
 ```
+
+#### 多卡训练
+
+**DataParallel (DP)：**
+
+```bash
+python main.py \
+    --model_name resnet50 \
+    --pretrained \
+    --device 0,1,2,3 \
+    --batch_size 256 \
+    --epoch 100
+```
+
+**DistributedDataParallel (DDP，推荐)：**
+
+DDP 比 DP 效率更高，支持多机多卡，是 PyTorch 官方推荐的多卡训练方式。
+
+```bash
+# 单机 4 卡 DDP 训练
+torchrun --nproc_per_node=4 main.py \
+    --model_name resnet50 \
+    --pretrained \
+    --local_rank 0 \
+    --batch_size 64 \
+    --sync_bn \
+    --epoch 100
+
+# 或使用旧版启动方式
+python -m torch.distributed.launch --nproc_per_node=4 main.py \
+    --model_name resnet50 \
+    --pretrained \
+    --local_rank 0 \
+    --batch_size 64 \
+    --epoch 100
+```
+
+| 参数 | 说明 |
+|------|------|
+| `--local_rank` | DDP 本地进程 rank，设为 0 启用 DDP |
+| `--sync_bn` | 使用 SyncBatchNorm，跨卡同步 BN 统计量 |
+| `--nproc_per_node` | 每个节点使用的 GPU 数量 |
+
+> [!NOTE]
+> DDP 模式下 `batch_size` 是每张卡的 batch size，总 batch size = batch_size × GPU 数量
 
 ### 4️⃣ 推理预测
 
@@ -236,7 +282,9 @@ python metrics.py --save_path runs/exp --task fps --batch_size 32
 | `--pretrained` | flag | `False` | 使用 ImageNet 预训练权重 |
 | `--weight` | str | `''` | 自定义权重文件路径 |
 | `--config` | str | `config/config.py` | 配置文件路径 |
-| `--device` | str | `''` | GPU 设备，如 `0` 或 `0,1` 或 `cpu` |
+| `--device` | str | `0` | GPU 设备，如 `0` 或 `0,1,2,3` 或 `cpu` |
+| `--local_rank` | int | `-1` | DDP 本地进程 rank，`-1` 表示不使用 DDP |
+| `--sync_bn` | flag | `False` | 使用 SyncBatchNorm（DDP 模式下跨卡同步 BN）|
 
 ### 📂 数据参数
 

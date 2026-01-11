@@ -405,7 +405,38 @@ class TrainMetric:
         f1_per_class = 2 * precision_per_class * recall_per_class / (precision_per_class + recall_per_class + 1e-7)
         return np.mean(f1_per_class)
 
-    def get(self):
+    def _sync_ddp(self):
+        """Synchronize metrics across all processes in DDP mode"""
+        import torch.distributed as dist
+        
+        # Synchronize confusion matrices
+        train_cm_tensor = torch.tensor(self.train_cm, dtype=torch.float64).cuda()
+        test_cm_tensor = torch.tensor(self.test_cm, dtype=torch.float64).cuda()
+        dist.all_reduce(train_cm_tensor, op=dist.ReduceOp.SUM)
+        dist.all_reduce(test_cm_tensor, op=dist.ReduceOp.SUM)
+        self.train_cm = train_cm_tensor.cpu().numpy()
+        self.test_cm = test_cm_tensor.cpu().numpy()
+        
+        # Synchronize loss (compute average)
+        world_size = dist.get_world_size()
+        
+        train_loss_tensor = torch.tensor([np.mean(self.train_loss) if self.train_loss else 0.0], dtype=torch.float64).cuda()
+        test_loss_tensor = torch.tensor([np.mean(self.test_loss) if self.test_loss else 0.0], dtype=torch.float64).cuda()
+        dist.all_reduce(train_loss_tensor, op=dist.ReduceOp.SUM)
+        dist.all_reduce(test_loss_tensor, op=dist.ReduceOp.SUM)
+        self.train_loss = [train_loss_tensor.item() / world_size]
+        self.test_loss = [test_loss_tensor.item() / world_size]
+        
+        if self.train_kd_loss:
+            kd_loss_tensor = torch.tensor([np.mean(self.train_kd_loss)], dtype=torch.float64).cuda()
+            dist.all_reduce(kd_loss_tensor, op=dist.ReduceOp.SUM)
+            self.train_kd_loss = [kd_loss_tensor.item() / world_size]
+
+    def get(self, is_ddp=False):
+        # Synchronize metrics in DDP mode
+        if is_ddp:
+            self._sync_ddp()
+        
         result = {}
         result['train_loss'] = np.mean(self.train_loss)
         result['test_loss'] = np.mean(self.test_loss)
@@ -802,6 +833,44 @@ def is_parallel(model):
 def de_parallel(model):
     # De-parallelize a model: returns single-GPU model if model is of type DP or DDP
     return model.module if is_parallel(model) else model
+
+def init_distributed(local_rank):
+    """Initialize DDP distributed training environment"""
+    if local_rank != -1:
+        torch.cuda.set_device(local_rank)
+        torch.distributed.init_process_group(backend='nccl', init_method='env://')
+        return True
+    return False
+
+def cleanup_distributed():
+    """Cleanup DDP distributed training environment"""
+    if torch.distributed.is_initialized():
+        torch.distributed.destroy_process_group()
+
+def get_rank():
+    """Get current process rank"""
+    if torch.distributed.is_initialized():
+        return torch.distributed.get_rank()
+    return 0
+
+def get_world_size():
+    """Get total number of processes"""
+    if torch.distributed.is_initialized():
+        return torch.distributed.get_world_size()
+    return 1
+
+def is_main_process():
+    """Check if current process is main process"""
+    return get_rank() == 0
+
+def reduce_tensor(tensor):
+    """Synchronize tensor across all processes and compute average"""
+    if not torch.distributed.is_initialized():
+        return tensor
+    rt = tensor.clone()
+    torch.distributed.all_reduce(rt, op=torch.distributed.ReduceOp.SUM)
+    rt /= get_world_size()
+    return rt
 
 class ModelEMA:
     """ Updated Exponential Moving Average (EMA) from https://github.com/rwightman/pytorch-image-models

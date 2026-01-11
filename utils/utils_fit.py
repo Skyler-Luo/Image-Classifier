@@ -2,19 +2,23 @@ from copy import deepcopy
 
 import numpy as np
 import torch
+import torch.distributed as dist
 import tqdm
 
-from .utils import TrainMetric
+from .utils import TrainMetric, is_main_process, reduce_tensor
 from .utils_aug import mixup_criterion, mixup_data
 
-def fitting(model, ema, loss, optimizer, train_dataset, test_dataset, CLASS_NUM, DEVICE, scaler, show_thing, opt):
+def fitting(model, ema, loss, optimizer, train_dataset, test_dataset, CLASS_NUM, DEVICE, scaler, show_thing, opt, is_ddp=False):
     model.train()
     metric = TrainMetric(CLASS_NUM)
     accumulate = getattr(opt, 'accumulate', 1)
     grad_clip = getattr(opt, 'grad_clip', 0.0)
     optimizer.zero_grad()
     
-    for batch_idx, (x, y) in enumerate(tqdm.tqdm(train_dataset, desc='{} Train Stage'.format(show_thing))):
+    # Only show progress bar on main process
+    train_iter = tqdm.tqdm(train_dataset, desc='{} Train Stage'.format(show_thing)) if is_main_process() else train_dataset
+    
+    for batch_idx, (x, y) in enumerate(train_iter):
         x, y = x.to(DEVICE).float(), y.to(DEVICE).long()
 
         with torch.cuda.amp.autocast(opt.amp):
@@ -62,8 +66,12 @@ def fitting(model, ema, loss, optimizer, train_dataset, test_dataset, CLASS_NUM,
         model_eval = ema.ema
     else:
         model_eval = model.eval()
+    
+    # Only show progress bar on main process
+    test_iter = tqdm.tqdm(test_dataset, desc='{} Test Stage'.format(show_thing)) if is_main_process() else test_dataset
+    
     with torch.inference_mode():
-        for x, y in tqdm.tqdm(test_dataset, desc='{} Test Stage'.format(show_thing)):
+        for x, y in test_iter:
             x, y = x.to(DEVICE).float(), y.to(DEVICE).long()
 
             with torch.cuda.amp.autocast(opt.amp):
@@ -79,18 +87,21 @@ def fitting(model, ema, loss, optimizer, train_dataset, test_dataset, CLASS_NUM,
             metric.update_loss(float(l.data), isTest=True)
             metric.update_y(y, pred, isTest=True)
 
-    return metric.get()
+    return metric.get(is_ddp)
 
 
 def fitting_distill(teacher_model, student_model, ema, loss, kd_loss, optimizer, train_dataset, test_dataset, CLASS_NUM,
-                    DEVICE, scaler, show_thing, opt):
+                    DEVICE, scaler, show_thing, opt, is_ddp=False):
     student_model.train()
     metric = TrainMetric(CLASS_NUM)
     accumulate = getattr(opt, 'accumulate', 1)
     grad_clip = getattr(opt, 'grad_clip', 0.0)
     optimizer.zero_grad()
     
-    for batch_idx, (x, y) in enumerate(tqdm.tqdm(train_dataset, desc='{} Train Stage'.format(show_thing))):
+    # Only show progress bar on main process
+    train_iter = tqdm.tqdm(train_dataset, desc='{} Train Stage'.format(show_thing)) if is_main_process() else train_dataset
+    
+    for batch_idx, (x, y) in enumerate(train_iter):
         x, y = x.to(DEVICE).float(), y.to(DEVICE).long()
 
         with torch.cuda.amp.autocast(opt.amp):
@@ -145,8 +156,12 @@ def fitting_distill(teacher_model, student_model, ema, loss, kd_loss, optimizer,
         model_eval = ema.ema
     else:
         model_eval = student_model.eval()
+    
+    # Only show progress bar on main process
+    test_iter = tqdm.tqdm(test_dataset, desc='{} Test Stage'.format(show_thing)) if is_main_process() else test_dataset
+    
     with torch.inference_mode():
-        for x, y in tqdm.tqdm(test_dataset, desc='{} Test Stage'.format(show_thing)):
+        for x, y in test_iter:
             x, y = x.to(DEVICE).float(), y.to(DEVICE).long()
 
             with torch.cuda.amp.autocast(opt.amp):
@@ -162,4 +177,4 @@ def fitting_distill(teacher_model, student_model, ema, loss, kd_loss, optimizer,
             metric.update_loss(float(l.data), isTest=True)
             metric.update_y(y, pred, isTest=True)
 
-    return metric.get()
+    return metric.get(is_ddp)
